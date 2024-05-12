@@ -1,19 +1,29 @@
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
-import typeDefs from './schema/TableBookingschema.js';
-import {resolvers} from './resolvers/resolvers.js';
+import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { ApolloGateway } from "@apollo/gateway";
 
-const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+// Import the gateway instance created in gateway.ts
+import { gateway } from "./gateway/gateway.js";
+
+const PORT = process.env.PORT || 4000;
+const app = express();
+
+async function startServer() {
+  const server = new ApolloServer({
+    gateway,
   });
-  
-  // Passing an ApolloServer instance to the `startStandaloneServer` function:
-  //  1. creates an Express app
-  //  2. installs your ApolloServer instance as middleware
-  //  3. prepares your app to handle incoming requests
-  const { url } = await startStandaloneServer(server, {
-    listen: { port: 5000 },
+
+  await server.start();
+
+  // Apply middleware to the Express server
+  server.applyMiddleware({ app });
+
+  // Start the server
+  app.listen(PORT, () => {
+    console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
   });
-  
-  console.log(`🚀  Server ready at: ${url}`);
+}
+
+startServer().catch((err) => {
+  console.error("Error starting server:", err.message);
+});
