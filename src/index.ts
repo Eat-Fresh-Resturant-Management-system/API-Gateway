@@ -1,29 +1,27 @@
-import express from "express";
-import { ApolloServer } from "apollo-server-express";
-import { ApolloGateway } from "@apollo/gateway";
+import { ApolloServer } from '@apollo/server';
+import { ApolloGateway } from '@apollo/gateway';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { readFileSync } from 'fs';
+import { IntrospectAndCompose } from '@apollo/gateway';
 
-// Import the gateway instance created in gateway.ts
-import { gateway } from "./gateway/gateway.js";
+import express from 'express';
+import pkg from 'body-parser';
+import http from 'http';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { expressMiddleware } from '@apollo/server/express4';
 
-const PORT = process.env.PORT || 4000;
-const app = express();
+const { json } = pkg;
 
-async function startServer() {
-  const server = new ApolloServer({
-    gateway,
-  });
+const port = process.env.APOLLO_PORT || 5000;
+const supergraphSdl =readFileSync('supergraph.graphql', 'utf-16le');
 
-  await server.start();
 
-  // Apply middleware to the Express server
-  server.applyMiddleware({ app });
-
-  // Start the server
-  app.listen(PORT, () => {
-    console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
-  });
-}
-
-startServer().catch((err) => {
-  console.error("Error starting server:", err.message);
+const gateway = new ApolloGateway({ 
+  supergraphSdl
 });
+
+const server = new ApolloServer({ gateway });
+
+// Note the top-level await!
+const { url } = await startStandaloneServer(server, {listen: { port: 4001 } });
+console.log(`🚀  Server ready at ${url}`);

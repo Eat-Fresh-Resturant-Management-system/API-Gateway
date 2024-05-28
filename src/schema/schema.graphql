@@ -1,35 +1,34 @@
-type TableBooking {
-  id: ID!
-  tableName: String!
-  userName: String!
-  bookingDate: String!
-  bookingDuration: Int!
-  bookingEndTime: String!
-  bookingStatus: String!
-}
+  type TableBooking {
+    userName: String!
+    tableName: String!
+    bookingDate: String!
+    bookingDuration: Int!
+    bookingStatus: String!
 
-type Table {
-  tableName: String!
-  capacity: Int!
-  isAvailable: Boolean!
-}
+  }
 
-type Query {
-  getAllTableBookings: [TableBooking!]!
-  getAllTables: [Table!]!
-  getAvailableTables: [Table!]!
-  getTableBookingByUserName(userName: String!): [TableBooking!]!
-}
+  type Table {
+    tableId: ID!
+    tableName: String!
+    capacity: Int!
+    isAvailable: Boolean!
+  }
 
-type Mutation {
-  createTableBooking(tableName: String!, userName: String!, bookingDuration: Int!): TableBooking!
-  createTable(tableName: String!, capacity: Int!): Table!
-  toggleTableAvailability(tableName: String!): Table!
-  deleteTable(tableName: String!): DeleteResponse!
-  deleteTableBooking(userName: String!): DeleteResponse!
-}
+  type Query {
 
-type DeleteResponse {
-  success: Boolean!
-  message: String
-}
+    getAllTableBookings: [TableBooking]
+    getAllTables: [Table]
+    getAvailableTables: [Table]
+    getTableBookingByUserName(userName: String!): [TableBooking]
+
+
+  }
+
+  type Mutation {
+    createTableBooking(tableName: String!, userName: String!, bookingDuration: Int!): TableBooking
+    createTable( tableName: String!, capacity: Int!): Table
+    toggleTableAvailability(tableName: String!): Table
+    deleteTableBooking(userName: String!): TableBooking
+    deleteTable(tableName: String!): Table
+    
+  }
