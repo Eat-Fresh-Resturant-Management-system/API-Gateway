@@ -11,7 +11,7 @@ COPY . .
 # Build the application
 RUN npm run build --only=production
 # Set environment variables
-ARG PORT_ARG=4000
+ARG PORT_ARG=5000
 ENV PORT=${PORT_ARG}
 EXPOSE $PORT_ARG
 
