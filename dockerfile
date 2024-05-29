@@ -9,7 +9,7 @@ RUN npm install
 # Copy the rest of the application files
 COPY . .
 # Build the application
-RUN npm run build --only=production
+RUN npm run build
 # Set environment variables
 ARG PORT_ARG=5000
 ENV PORT=${PORT_ARG}
