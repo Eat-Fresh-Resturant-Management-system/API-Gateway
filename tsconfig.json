@@ -10,7 +10,7 @@
       "esModuleInterop": true,
       "types": ["node"]
     },
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "src/gatewayrs", "gateway"],
     "exclude": ["node_modules"]
 
   }

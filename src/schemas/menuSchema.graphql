@@ -1,0 +1,52 @@
+type schema {
+  query: Query
+  mutation: Mutation
+}
+# Define the MenuItem type
+type MenuItem {
+  ItemId: ID!
+  ItemName: String!
+  CategoryId: Int!
+  Price: Float!
+  Description: String!
+  MenuCategoryName: String!
+}
+
+# Define the MenuCategory type
+type MenuCategory {
+  MenuCategoryName: String!
+  MenuItems: [MenuItem]
+}
+
+# Define the Query type
+type Query {
+  menuItems: [MenuItem]
+  menuItem(id: ID!): MenuItem
+  menuCategories: [MenuCategory]
+  menuCategoryByName(name: String!): MenuCategory
+  menuItemsForCategory(categoryId: String!): [MenuItem]
+}
+
+# Define the Mutation type
+type Mutation {
+  createMenuCategory(menuCategory: MenuCategoryInput!): MenuCategory
+  deleteMenuCategory(name: String!): SuccessMessage
+  createMenuItem(menuItem: MenuItemInput!): MenuItem
+  deleteMenuItem(id: Int!): SuccessMessage
+}
+
+input MenuCategoryInput {
+  MenuCategoryName: String!
+  Description: String
+}
+
+input MenuItemInput {
+  Name: String!
+  Description: String
+  Price: Float!
+  Category: String!
+}
+
+type SuccessMessage {
+  success: Boolean!
+}

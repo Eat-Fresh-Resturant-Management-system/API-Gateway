@@ -1,0 +1,13 @@
+subgraphs:
+  TableBooking:
+    routing_url: http://localhost:4000/graphql
+    schema:
+      file: ./src/schemas/tableSchema.graphql
+  MenuManagement:
+    routing_url: http://localhost:5001/graphql
+    schema:
+      file: ./src/schemas/menuSchema.graphql
+  OrderProcessing:
+    routing_url: http://localhost:4002/graphql
+    schema:
+      file:  ./src/schemas/orderSchema.graphql

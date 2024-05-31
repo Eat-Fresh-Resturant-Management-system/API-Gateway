@@ -2,28 +2,32 @@ import { ApolloServer } from '@apollo/server';
 import { ApolloGateway } from '@apollo/gateway';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { readFileSync } from 'fs';
-import express from 'express';
-import pkg from 'body-parser';
+import startMenuServer from './gateway/menuServer.js';  // Adjust the path as necessary
+import startOrderServer from './gateway/OrderServer.js';
 
-const { json } = pkg;
-let gateway;
+// Start the Menu Management server first
+await startMenuServer();
+await startOrderServer();
 
-try 
-{
-  const supergraphSdl =readFileSync('supergraph.graphql', 'utf-16le');
+// Function to start the API Gateway server
+async function startApiGateway() {
+  let gateway;
 
-  gateway = new ApolloGateway({ 
-    supergraphSdl
-  });
+  try {
+    const supergraphSdl = readFileSync('supergraph.graphql', 'utf-16le');
+
+    gateway = new ApolloGateway({
+      supergraphSdl
+    });
+  } catch (err) {
+    console.error(err);
+  }
+
+  const server = new ApolloServer({ gateway });
+  // Start the gateway server
+  const { url } = await startStandaloneServer(server, { listen: { port: 5000 } });
+  console.log(`🚀 API Gateway ready at ${url}`);
 }
-catch (err) {
-  console.error(err);
-}
 
-
-
-const server = new ApolloServer({ gateway });
-
-// Note the top-level await!
-const { url } = await startStandaloneServer(server, {listen: { port: 5000 } });
-console.log(`🚀  Server ready at ${url}`);
+// Start the API Gateway server after the Menu Management server
+startApiGateway();
