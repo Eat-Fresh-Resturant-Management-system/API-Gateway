@@ -5,9 +5,16 @@ import { readFileSync } from 'fs';
 import startMenuServer from './gateway/menuServer.js';  // Adjust the path as necessary
 import startOrderServer from './gateway/OrderServer.js';
 
-// Start the Menu Management server first
-await startMenuServer();
-await startOrderServer();
+// Function to start the Menu Management server
+async function startServers() {
+  try {
+    await startMenuServer();
+    await startOrderServer();
+  } catch (err) {
+    console.error("Error starting menu or order server:", err);
+    process.exit(1); // Exit the process if the menu or order server fails to start
+  }
+}
 
 // Function to start the API Gateway server
 async function startApiGateway() {
@@ -15,19 +22,18 @@ async function startApiGateway() {
 
   try {
     const supergraphSdl = readFileSync('supergraph.graphql', 'utf-16le');
-
     gateway = new ApolloGateway({
       supergraphSdl
     });
-  } catch (err) {
-    console.error(err);
-  }
 
-  const server = new ApolloServer({ gateway });
-  // Start the gateway server
-  const { url } = await startStandaloneServer(server, { listen: { port: 5000 } });
-  console.log(`🚀 API Gateway ready at ${url}`);
+    const server = new ApolloServer({ gateway });
+    // Start the gateway server
+    const { url } = await startStandaloneServer(server, { listen: { port: 5000 } });
+    console.log(`🚀 API Gateway ready at ${url}`);
+  } catch (err) {
+    console.error("Error starting API Gateway server:", err);
+  }
 }
 
-// Start the API Gateway server after the Menu Management server
-startApiGateway();
+// Start the Menu Management server first, then the API Gateway server
+startServers().then(startApiGateway);
