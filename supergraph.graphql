@@ -151,7 +151,7 @@ scalar join__FieldSet
 enum join__Graph {
   MENUMANAGEMENT @join__graph(name: "MenuManagement" url: "http://menu-service:4001/graphql")
   ORDERPROCESSING @join__graph(name: "OrderProcessing" url: "http://order-service:4002/graphql")
-  TABLEBOOKING @join__graph(name: "TableBooking" url: "http://table-service:4040/graphql")
+  TABLEBOOKING @join__graph(name: "TableBooking" url: "http://table-services:4040/graphql")
 }
 
 type schema {
