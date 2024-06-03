@@ -21,6 +21,7 @@ async function startApiGateway() {
   let gateway;
 
   try {
+    console.log("loading gateway supergraph")
     const supergraphSdl = readFileSync('supergraph.graphql', 'utf-16le');
     gateway = new ApolloGateway({
       supergraphSdl

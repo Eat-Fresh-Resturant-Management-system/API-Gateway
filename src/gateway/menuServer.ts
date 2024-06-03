@@ -7,7 +7,7 @@ import express from 'express';
 import { auth } from 'express-oauth2-jwt-bearer';
 
 // Load type definitions from the schema file
-console.log('Loading schema file');
+console.log('Loading Menu schema file');
 
 const typeDefs = gql`
 
