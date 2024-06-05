@@ -1,6 +1,6 @@
 subgraphs:
   TableBooking:
-    routing_url: http://localhost:4000/graphql
+    routing_url: http://table-service:4040/graphql
     schema:
       file: ./src/schemas/tableSchema.graphql
   MenuManagement:
