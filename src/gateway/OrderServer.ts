@@ -89,10 +89,17 @@ const jwtCheck = auth({
 // Enforce JWT authentication on all endpoints
 app.use(jwtCheck);
 
-
 const server = new ApolloServer({
-  schema: buildSubgraphSchema({ typeDefs, resolvers: orderResolvers })
+  schema: buildSubgraphSchema({ typeDefs, resolvers: orderResolvers }),
+  context: ({ req }) => {
+    const token = req.headers.authorization || '';
+    if (!token) {
+      throw new Error('Authorization token is missing');
+    }
+    return { token };
+  }
 });
+
 
 // Function to start the server
 async function startOrderServer() {

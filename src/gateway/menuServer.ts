@@ -77,7 +77,14 @@ const jwtCheck = auth({
 app.use(jwtCheck);
 
 const server = new ApolloServer({
-  schema: buildSubgraphSchema({ typeDefs, resolvers: menuResolvers })
+  schema: buildSubgraphSchema({ typeDefs, resolvers: menuResolvers }),
+  context: ({ req }) => {
+    const token = req.headers.authorization || '';
+    if (!token) {
+      throw new Error('Authorization token is missing');
+    }
+    return { token };
+  }
 });
 
 // Function to start the server
