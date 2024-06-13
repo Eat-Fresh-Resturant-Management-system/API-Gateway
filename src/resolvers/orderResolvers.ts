@@ -4,11 +4,18 @@ const orderResolvers = {
   Query: {
     getOrderItems: async () => {
       const response = await axios.get('http://order-service:5051/api/OrderItems');
-      return response.data;
+      return response.data.map(item => ({
+        ...item,
+        Quantity: item.Quantity !== null ? item.Quantity : 0  // Setting default value if Quantity is null
+      }));
     },
     getOrderItem: async (_: any, { id }: { id: string }) => {
       const response = await axios.get(`http://order-service:5051/api/OrderItems/${id}`);
-      return response.data;
+      const item = response.data;
+      return {
+        ...item,
+        Quantity: item.Quantity !== null ? item.Quantity : 0  // Setting default value if Quantity is null
+      };
     },
     getOrders: async () => {
       const response = await axios.get('http://order-service:5051/api/Orders');
