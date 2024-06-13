@@ -16,40 +16,40 @@ async function startServers() {
   }
 }
 
+// Custom class for RemoteGraphQLDataSource to handle headers
+class AuthenticatedDataSource extends RemoteGraphQLDataSource {
+  willSendRequest({ request, context }) {
+    // Forward the authorization token from the client request
+    if (context.token) {
+      request.http.headers.set('authorization', context.token);
+    }
+  }
+}
+
 // Function to start the API Gateway server
 async function startApiGateway() {
-  let gateway;
-
   try {
     console.log("loading gateway supergraph");
     const supergraphSdl = readFileSync('supergraph.graphql', 'utf-16le');
-    gateway = new ApolloGateway({
+    const gateway = new ApolloGateway({
       supergraphSdl,
       buildService({ url }) {
-        return new RemoteGraphQLDataSource({
-          url,
-          willSendRequest({ request, context }) {
-            // Forward the authorization token from the client request
-            if (context.token) {
-              request.http.headers.set('authorization', context.token);
-            }
-          },
-        });
+        return new AuthenticatedDataSource({ url });
       },
     });
 
     const server = new ApolloServer({
       gateway,
-      context: ({ req }) => {
-        // Extract the token from the request headers
-        const token = req.headers.authorization || '';
-        return { token };
-      }
     });
 
     // Start the gateway server
     const { url } = await startStandaloneServer(server, {
-      listen: { port: 5000 }
+      context: async ({ req }) => {
+        // Extract the token from the request headers
+        const token = req.headers.authorization || '';
+        return { token };
+      },
+      listen: { port: 5000 },
     });
     console.log(`🚀 API Gateway ready at ${url}`);
   } catch (err) {
