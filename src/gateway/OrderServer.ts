@@ -90,7 +90,7 @@ const jwtCheck = auth({
 app.use(jwtCheck);
 
 const server = new ApolloServer({
-  schema: buildSubgraphSchema({ typeDefs, resolvers: orderResolvers })
+  schema: buildSubgraphSchema({ typeDefs, resolvers: orderResolvers }),
   context: ({ req }) => {
     const token = req.headers.authorization || '';
     if (!token) {
