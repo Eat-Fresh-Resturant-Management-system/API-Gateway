@@ -2,7 +2,7 @@ import { ApolloServer } from '@apollo/server';
 import { ApolloGateway, RemoteGraphQLDataSource } from '@apollo/gateway';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { readFileSync } from 'fs';
-import startMenuServer from './gateway/menuServer.js';  
+import startMenuServer from './gateway/menuServer.js';  // Adjust the path as necessary
 import startOrderServer from './gateway/OrderServer.js';
 
 // Function to start the Menu Management server
@@ -44,11 +44,13 @@ async function startApiGateway() {
         // Extract the token from the request headers
         const token = req.headers.authorization || '';
         return { token };
-      },
+      }
     });
 
     // Start the gateway server
-    const { url } = await startStandaloneServer(server, { listen: { port: 5000 } });
+    const { url } = await startStandaloneServer(server, {
+      listen: { port: 5000 }
+    });
     console.log(`🚀 API Gateway ready at ${url}`);
   } catch (err) {
     console.error("Error starting API Gateway server:", err);
