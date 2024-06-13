@@ -67,24 +67,24 @@ const typeDefs = gql`
 
 const app = express();
 
-// const jwtCheck = auth({
-//   audience: 'https://swwao.orbit.au.dk/grp-13',
-//   issuerBaseURL: 'https://dev-feeu3ze3mjv64zbn.eu.auth0.com/',
-//   tokenSigningAlg: 'RS256'
-// });
+const jwtCheck = auth({
+  audience: 'https://swwao.orbit.au.dk/grp-13',
+  issuerBaseURL: 'https://dev-feeu3ze3mjv64zbn.eu.auth0.com/',
+  tokenSigningAlg: 'RS256'
+});
 
-// // Enforce JWT authentication on all endpoints
-// app.use(jwtCheck);
+// Enforce JWT authentication on all endpoints
+app.use(jwtCheck);
 
 const server = new ApolloServer({
   schema: buildSubgraphSchema({ typeDefs, resolvers: menuResolvers })
-  // context: ({ req }) => {
-  //   const token = req.headers.authorization || '';
-  //   if (!token) {
-  //     throw new Error('Authorization token is missing');
-  //   }
-  //   return { token };
-  // }
+  context: ({ req }) => {
+    const token = req.headers.authorization || '';
+    if (!token) {
+      throw new Error('Authorization token is missing');
+    }
+    return { token };
+  }
 });
 
 // Function to start the server
